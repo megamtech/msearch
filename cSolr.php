@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 //Delete all http://127.0.0.1:8080/solr/collection1/update?commit=true -d '<delete><query>*:*</query></delete>'
-include '../mquery/cModel.php';
+//include '../mquery/cModel.php';
 
-//include AppRoot . AppQueryModule . 'cModel.php';
+include AppRoot . AppQueryModule . 'cModel.php';
 
 class cSolr implements cModel {
 
