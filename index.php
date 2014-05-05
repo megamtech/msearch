@@ -9,13 +9,13 @@
 
 
 
-define('SOLR_HOST', "127.0.0.1");
+define('SOLR_HOST', "192.168.1.200");
 define('SOLR_PORT', "8080");
 define('SOLR_PATH', "/solr/");
-include '../mquery/cModel.php';
+include '../mQuery/cModel.php';
 
 class cSolr implements cModel
-    {
+{
 
     public $columns;
     private $query;
@@ -23,7 +23,8 @@ class cSolr implements cModel
     private $result;
     private $document;
 
-    function __construct($core = "") {
+    function __construct($core = "")
+    {
         $connectionProps = array();
         $connectionProps['hostname'] = SOLR_HOST;
         $connectionProps['port'] = SOLR_PORT;
@@ -35,7 +36,8 @@ class cSolr implements cModel
         $this->document = new SolrInputDocument();
     }
 
-    function read() {
+    function read()
+    {
 
         if (is_array($this->columns)) {
             foreach ($this->columns as $column) {
@@ -47,7 +49,8 @@ class cSolr implements cModel
         return $this->result->getResponse();
     }
 
-    function create() {
+    function create()
+    {
 
         if (is_array($this->columns)) {
             foreach ($this->columns as $column => $value) {
@@ -59,36 +62,42 @@ class cSolr implements cModel
         }
     }
 
-    function update() {
+    function update()
+    {
 
     }
 
-    function delete() {
+    function delete()
+    {
 
         $this->client->deleteByQueries($this->condition);
         return $this->client->commit();
     }
 
-    public function addOrderBy($orderby) {
+    public function addOrderBy($orderby)
+    {
 
     }
 
-    public function addLimit($limit) {
+    public function addLimit($limit)
+    {
         $this->query->setRows($limit);
         return $this;
     }
 
-    public function addOffset($offset) {
+    public function addOffset($offset)
+    {
         $this->query->setStart($offset);
         return $this;
     }
 
-    public function addWhereCondition($condition) {
+    public function addWhereCondition($condition)
+    {
 
         return $this;
     }
 
-    }
+}
 
 $cSolrObj = new cSolr("collection1");
 

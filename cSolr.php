@@ -8,9 +8,10 @@
 //Delete all http://127.0.0.1:8080/solr/collection1/update?commit=true -d '<delete><query>*:*</query></delete>'
 //include '../mquery/cModel.php';
 
-include AppRoot . AppQueryModule . 'cModel.php';
+require_once AppRoot . AppQueryModule . 'cModel.php';
 
-class cSolr implements cModel {
+class cSolr implements cModel
+{
 
     public $column;
     private $query;
@@ -19,7 +20,8 @@ class cSolr implements cModel {
     private $document;
     public $condition;
 
-    function __construct($core = "") {
+    function __construct($core = "")
+    {
         $connectionProps = array();
         $connectionProps['hostname'] = SOLR_HOST;
         $connectionProps['port'] = SOLR_PORT;
@@ -31,7 +33,8 @@ class cSolr implements cModel {
         $this->document = new SolrInputDocument();
     }
 
-    function read() {
+    function read()
+    {
 
         if (is_array($this->column)) {
             foreach ($this->column as $column) {
@@ -46,7 +49,8 @@ class cSolr implements cModel {
         return $this->result->getResponse();
     }
 
-    function create() {
+    function create()
+    {
 
         if (is_array($this->column)) {
             foreach ($this->column as $column => $value) {
@@ -58,40 +62,53 @@ class cSolr implements cModel {
         }
     }
 
-    function update() {
+    function update()
+    {
 
     }
 
-    function delete() {
+    function delete()
+    {
 
         $this->client->deleteByQuery($this->condition);
         return $this->commit();
     }
 
-    public function addOrderBy($orderby) {
+    public function addOrderBy($orderby)
+    {
 
     }
 
-    public function addLimit($limit) {
+    public function addLimit($limit)
+    {
         $this->query->setRows($limit);
         return $this;
     }
 
-    public function addOffset($offset) {
+    public function addOffset($offset)
+    {
         $this->query->setStart($offset);
         return $this;
     }
 
-    public function addWhereCondition($condition) {
+    public function addWhereCondition($condition)
+    {
 
         $this->condition = $condition;
+        if (!$condition['__AND__'] && !$condition['__OR__']) {
+            foreach ($this->condition as $key => $value) {
+                $condition_data.=$key . ":" . $value . ' AND ';
+            }
+            $this->condition = rtrim($condition_data, ' AND ');
+        }
 //        foreach ($this->condition as $key => $value) {
 //
 //        }
         return $this;
     }
 
-    public function commit() {
+    public function commit()
+    {
         $solrAddress = SOLR_HOST . ':' . SOLR_PORT . SOLR_PATH;
         $output = array();
         $response = exec('curl ' . $solrAddress . '/update?commit=true', $output);
