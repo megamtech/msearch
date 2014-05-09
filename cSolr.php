@@ -56,8 +56,8 @@ class cSolr implements cModel
             foreach ($this->column as $column => $value) {
                 $this->document->addField($column, $value);
             }
-            $this->result = $this->client->addDocument($this->document);
-            $this->client->commit();
+            $this->result = $this->client->addDocument($this->document, false, 1000);
+            $this->commit();
             return $this->result->getResponse();
         }
     }
