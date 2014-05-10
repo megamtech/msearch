@@ -64,13 +64,13 @@ class cSolr implements cModel
 
     function update()
     {
-
+        $this->delete();
+        return $this->create();
     }
 
     function delete()
     {
-
-        $this->client->deleteByQuery($this->condition);
+        $this->client->deleteById($this->condition);
         return $this->commit();
     }
 
