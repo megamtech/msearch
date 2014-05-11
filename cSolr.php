@@ -80,7 +80,9 @@ class cSolr implements cModel
     }
 
     public function addOrderBy($orderby) {
-
+        foreach ($orderby as $column => $order) {
+            $this->query->addSortField($column, $order);
+        }
     }
 
     public function addLimit($limit) {
