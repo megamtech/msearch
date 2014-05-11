@@ -11,7 +11,7 @@
 require_once AppRoot . AppQueryModule . 'cModel.php';
 
 class cSolr implements cModel
-{
+    {
 
     public $column;
     private $query;
@@ -20,8 +20,7 @@ class cSolr implements cModel
     private $document;
     public $condition;
 
-    function __construct($core = "")
-    {
+    function __construct($core = "") {
         $connectionProps = array();
         $connectionProps['hostname'] = SOLR_HOST;
         $connectionProps['port'] = SOLR_PORT;
@@ -33,8 +32,7 @@ class cSolr implements cModel
         $this->document = new SolrInputDocument();
     }
 
-    function read()
-    {
+    function read() {
 
         if (is_array($this->column)) {
             foreach ($this->column as $column) {
@@ -49,50 +47,53 @@ class cSolr implements cModel
         return $this->result->getResponse();
     }
 
-    function create()
-    {
+    function create() {
 
-        if (is_array($this->column)) {
-            foreach ($this->column as $column => $value) {
-                $this->document->addField($column, $value);
+        try {
+
+
+            if (is_array($this->column)) {
+                foreach ($this->column as $column => $value) {
+                    $this->document->addField($column, $value);
+                }
+                $this->result = $this->client->addDocument($this->document, false, 1);
+                $this->commit();
+                return $this->result->getResponse();
             }
-            $this->result = $this->client->addDocument($this->document, false, 1000);
-            $this->commit();
-            return $this->result->getResponse();
+        } catch (Exception $ex) {
+            print_r($ex);
         }
     }
 
-    function update()
-    {
+    function update() {
         $this->delete();
         return $this->create();
     }
 
-    function delete()
-    {
-        $this->client->deleteById($this->condition);
+    function delete() {
+        if ($this->condition != '') {
+            $this->client->deleteById($this->condition);
+        } else {
+            $this->client->deleteByQuery("*:*");
+        }
         return $this->commit();
     }
 
-    public function addOrderBy($orderby)
-    {
+    public function addOrderBy($orderby) {
 
     }
 
-    public function addLimit($limit)
-    {
+    public function addLimit($limit) {
         $this->query->setRows($limit);
         return $this;
     }
 
-    public function addOffset($offset)
-    {
+    public function addOffset($offset) {
         $this->query->setStart($offset);
         return $this;
     }
 
-    public function addWhereCondition($condition)
-    {
+    public function addWhereCondition($condition) {
 
         $this->condition = $condition;
         if (!$condition['__AND__'] && !$condition['__OR__']) {
@@ -107,15 +108,14 @@ class cSolr implements cModel
         return $this;
     }
 
-    public function commit()
-    {
+    public function commit() {
         $solrAddress = SOLR_HOST . ':' . SOLR_PORT . SOLR_PATH;
         $output = array();
         $response = exec('curl ' . $solrAddress . '/update?commit=true', $output);
         return $output;
     }
 
-}
+    }
 
 //$cSolrObj = new cSolr("collection1");
 //
