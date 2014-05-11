@@ -81,17 +81,20 @@ class cSolr implements cModel
 
     public function addOrderBy($orderby) {
         foreach ($orderby as $column => $order) {
+            $order = $order == "asc" ? $this->query->ORDER_ASC : $this->query->ORDER_DESC;
             $this->query->addSortField($column, $order);
         }
     }
 
     public function addLimit($limit) {
         $this->query->setRows($limit);
+
         return $this;
     }
 
     public function addOffset($offset) {
         $this->query->setStart($offset);
+
         return $this;
     }
 
@@ -100,13 +103,15 @@ class cSolr implements cModel
         $this->condition = $condition;
         if (!$condition['__AND__'] && !$condition['__OR__']) {
             foreach ($this->condition as $key => $value) {
-                $condition_data.=$key . ":" . $value . ' AND ';
+                $condition_data .= $key . ":" . $value . ' AND ';
             }
             $this->condition = rtrim($condition_data, ' AND ');
         }
 //        foreach ($this->condition as $key => $value) {
 //
 //        }
+
+
         return $this;
     }
 
