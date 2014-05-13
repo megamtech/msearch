@@ -106,7 +106,7 @@ class cSolr implements cModel
                 //encoding the user data so it wont break with space or special characters
                 $condition_data .= $key . ":" . str_replace(' ', '%20', $value) . ' AND ';
             }
-            echo $this->condition = rtrim($condition_data, ' AND ');
+            $this->condition = rtrim($condition_data, ' AND ');
         }
 //        foreach ($this->condition as $key => $value) {
 //
