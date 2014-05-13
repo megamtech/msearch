@@ -100,12 +100,17 @@ class cSolr implements cModel
 
     public function addWhereCondition($condition) {
 
-        $this->condition = $condition;
+
         if (!$condition['__AND__'] && !$condition['__OR__']) {
             foreach ($this->condition as $key => $value) {
                 $condition_data .= $key . ":" . $value . ' AND ';
             }
             $this->condition = rtrim($condition_data, ' AND ');
+        } else {
+            foreach ($condition as $key => $value) {
+                //encoding the user data so it wont break with space or special characters
+                $this->condition[$key] = urlencode($value);
+            }
         }
 //        foreach ($this->condition as $key => $value) {
 //
