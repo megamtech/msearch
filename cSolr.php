@@ -10,8 +10,7 @@
 
 require_once AppRoot . AppQueryModule . 'cModel.php';
 
-class cSolr implements cModel
-    {
+class cSolr implements cModel {
 
     public $column;
     private $query;
@@ -66,7 +65,16 @@ class cSolr implements cModel
     }
 
     function update() {
+        $data = $this->column;
+        unset($this->column);
+        if ($data['id'] != '') {
+            $this->condition = $data['id'];
+        } else {
+            echo "Solr id cannot be empty";
+            exit;
+        }
         $this->delete();
+        $this->column = $data;
         return $this->create();
     }
 
@@ -99,6 +107,7 @@ class cSolr implements cModel
     }
 
     public function addWhereCondition($condition) {
+//Possible comparison types
 
         $this->condition = $condition;
         if (!$condition['__AND__'] && !$condition['__OR__']) {
@@ -123,7 +132,7 @@ class cSolr implements cModel
         return $output;
     }
 
-    }
+}
 
 //$cSolrObj = new cSolr("collection1");
 //
