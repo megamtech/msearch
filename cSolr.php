@@ -29,6 +29,7 @@ class cSolr implements cModel {
         $this->client = new SolrClient($connectionProps);
         $this->query = new SolrQuery();
         $this->document = new SolrInputDocument();
+
     }
 
     function read() {
@@ -44,6 +45,7 @@ class cSolr implements cModel {
         $this->result = $this->client
                 ->query($this->query);
         return $this->result->getResponse();
+
     }
 
     function create() {
@@ -55,13 +57,15 @@ class cSolr implements cModel {
                 foreach ($this->column as $column => $value) {
                     $this->document->addField($column, $value);
                 }
-                $this->result = $this->client->addDocument($this->document, false, 1);
+                $this->result = $this->client->addDocument($this->document,
+                        false, 1);
                 $this->commit();
                 return $this->result->getResponse();
             }
         } catch (Exception $ex) {
             print_r($ex);
         }
+
     }
 
     function update() {
@@ -76,6 +80,7 @@ class cSolr implements cModel {
         $this->delete();
         $this->column = $data;
         return $this->create();
+
     }
 
     function delete() {
@@ -85,6 +90,7 @@ class cSolr implements cModel {
             $this->client->deleteByQuery("*:*");
         }
         return $this->commit();
+
     }
 
     public function addOrderBy($orderby) {
@@ -92,18 +98,27 @@ class cSolr implements cModel {
             $order = $order == "asc" ? $this->query->ORDER_ASC : $this->query->ORDER_DESC;
             $this->query->addSortField($column, $order);
         }
+
     }
 
     public function addLimit($limit) {
         $this->query->setRows($limit);
 
         return $this;
+
     }
 
     public function addOffset($offset) {
         $this->query->setStart($offset);
 
         return $this;
+
+    }
+
+    public function addGroupBy($groupby) {
+
+        return $this;
+
     }
 
     public function addWhereCondition($condition) {
@@ -123,6 +138,7 @@ class cSolr implements cModel {
 
 
         return $this;
+
     }
 
     public function commit() {
@@ -130,6 +146,7 @@ class cSolr implements cModel {
         $output = array();
         $response = exec('curl ' . $solrAddress . '/update?commit=true', $output);
         return $output;
+
     }
 
 }
@@ -137,4 +154,5 @@ class cSolr implements cModel {
 //$cSolrObj = new cSolr("collection1");
 //
 //print_r($cSolrObj->addLimit(50)->addOffset(0)->read());
+
 ?>
