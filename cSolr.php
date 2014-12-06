@@ -63,7 +63,7 @@ class cSolr implements cModel {
                 return $this->result->getResponse();
             }
         } catch (Exception $ex) {
-            print_r($ex);
+            print_r($ex);exit;
         }
 
     }
@@ -95,7 +95,7 @@ class cSolr implements cModel {
 
     public function addOrderBy($orderby) {
         foreach ($orderby as $column => $order) {
-            $order = $order == "asc" ? $this->query->ORDER_ASC : $this->query->ORDER_DESC;
+            $order = $order == "asc" ? SolrQuery::ORDER_ASC : SolrQuery::ORDER_DESC;
             $this->query->addSortField($column, $order);
         }
 
